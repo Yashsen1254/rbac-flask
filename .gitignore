@@ -1,0 +1,116 @@
+# ======================================
+# OS Files
+# ======================================
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ======================================
+# IDEs / Editors
+# ======================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*.iml
+
+# ======================================
+# Environment Variables
+# ======================================
+.env
+.env.*
+!.env.example
+
+# ======================================
+# Python (Flask Backend)
+# ======================================
+backend/__pycache__/
+backend/*.py[cod]
+backend/**/*.py[cod]
+
+backend/.pytest_cache/
+backend/.mypy_cache/
+backend/.ruff_cache/
+backend/.coverage
+backend/htmlcov/
+backend/.tox/
+backend/.nox/
+
+backend/instance/
+backend/uploads/
+
+backend/.venv/
+backend/venv/
+backend/env/
+backend/ENV/
+
+# Build artifacts
+backend/build/
+backend/dist/
+backend/*.egg-info/
+
+# SQLite databases (if used)
+backend/*.db
+backend/*.sqlite
+backend/*.sqlite3
+
+# Logs
+backend/*.log
+
+# ======================================
+# MySQL Dumps
+# ======================================
+*.sql
+*.dump
+
+# ======================================
+# React / TypeScript Frontend
+# ======================================
+frontend/node_modules/
+
+# Build output
+frontend/dist/
+frontend/build/
+frontend/.vite/
+
+# Cache
+frontend/.cache/
+frontend/.parcel-cache/
+frontend/.turbo/
+frontend/.eslintcache
+
+# TypeScript
+frontend/*.tsbuildinfo
+
+# Logs
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+frontend/*.log
+
+# ======================================
+# Testing
+# ======================================
+frontend/coverage/
+backend/coverage/
+
+# ======================================
+# Temporary Files
+# ======================================
+*.tmp
+*.temp
+*.bak
+*.orig
+
+# ======================================
+# Package Managers
+# ======================================
+frontend/.pnp
+frontend/.pnp.js
+
+# ======================================
+# Misc
+# ======================================
+*.pid
+*.seed
