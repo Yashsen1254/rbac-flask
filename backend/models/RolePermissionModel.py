@@ -1,5 +1,3 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from config.db import db
 
 class RolePermissionModel(db.Model):
@@ -9,5 +7,5 @@ class RolePermissionModel(db.Model):
     Role_Id = db.Column(db.Integer, db.ForeignKey('Role.Role_Id'))
     Permission_Id = db.Column(db.Integer, db.ForeignKey('Permission.Permission_Id'))
     
-    Role = db.relationship('Role' , backref=db.backref('RolePermission', lazy=True))
-    Permission = db.relationship('Permission' , backref=db.backref('RolePermission', lazy=True))
+    Role = db.relationship('RoleModel' , backref=db.backref('RolePermissions', lazy=True))
+    Permission = db.relationship('PermissionModel' , backref=db.backref('RolePermissions', lazy=True))
