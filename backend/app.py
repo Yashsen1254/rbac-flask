@@ -1,0 +1,39 @@
+from flask import Flask
+from config.db import db, jwt, cors
+from config.config import Config
+from flask_migrate import Migrate
+from models.CategoryModel import CategoryModel
+from models.PermissionModel import PermissionModel
+from models.ProductModel import ProductModel
+from models.RoleModel import RoleModel
+from models.RolePermissionModel import RolePermissionModel
+from models.RoleUserModel import RoleUserModel
+from models.UserModel import UserModel
+from features.auth.routes import auth_bp
+from features.category.routes import category_bp
+from features.permission.routes import permission_bp
+from features.product.routes import product_bp
+from features.role.routes import role_bp
+from features.rolepermission.routes import rolepermission_bp
+from features.user.routes import user_bp
+from features.userrole.routes import userrole_bp
+
+app = Flask(__name__)
+app.config.from_object(Config)
+db.init_app(app)
+jwt.init_app(app)
+cors.init_app(app)
+
+app.register_blueprint(auth_bp)
+app.register_blueprint(category_bp)
+app.register_blueprint(permission_bp)
+app.register_blueprint(product_bp)
+app.register_blueprint(role_bp)
+app.register_blueprint(rolepermission_bp)
+app.register_blueprint(user_bp)
+app.register_blueprint(userrole_bp)
+
+migrate = Migrate(app, db)
+
+if __name__ == '__main__':
+    app.run(debug=True)
