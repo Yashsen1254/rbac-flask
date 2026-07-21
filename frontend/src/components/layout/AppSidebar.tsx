@@ -1,6 +1,4 @@
-import * as React from "react";
 import { Link, useLocation } from "react-router-dom";
-
 import {
   Sidebar,
   SidebarContent,
@@ -13,15 +11,12 @@ import {
   SidebarMenuItem,
   SidebarFooter,
 } from "@/components/ui/sidebar";
-
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
-
 import { navItems } from "./NavMain";
 
 const AppSidebar = () => {
   const location = useLocation();
-
   return (
     <Sidebar>
       <SidebarHeader className="text-xl font-bold px-4 py-5">

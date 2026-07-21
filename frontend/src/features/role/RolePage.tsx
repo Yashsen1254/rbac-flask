@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Plus } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
 import {
   Card,
   CardContent,
@@ -13,7 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
 import {
   Table,
   TableBody,
@@ -22,7 +19,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 import {
   Drawer,
   DrawerContent,
@@ -31,7 +27,6 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -42,32 +37,20 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useAddRole, useDeleteRole, useUpdateRole } from "./hooks/mutations/roleMutations";
+import { useRoles } from "./hooks/queries/roleQueries";
+import type { Role, RoleRequest } from "./types/role";
 
-import {
-  useAddCategory,
-  useDeleteCategory,
-  useUpdateCategory,
-} from "./hooks/mutations/categoryMutations";
-
-import { useCategories } from "./hooks/queries/categoryQueries";
-
-import type { Category, CategoryRequest } from "./types/category";
-
-const CategoryPage = () => {
-  const { data: categories, isLoading, isError, error } = useCategories();
-  const addCategoryMutation = useAddCategory();
-  const updateCategoryMutation = useUpdateCategory();
-  const deleteCategoryMutation = useDeleteCategory();
-
+const RolePage = () => {
+  const { data: roles, isLoading, isError, error } = useRoles();
+  const addRoleMutation = useAddRole();
+  const updateRoleMutation = useUpdateRole();
+  const deleteRoleMutation = useDeleteRole();
   const [open, setOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
-    null,
-  );
-  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(
-    null,
-  );
-  const isEditMode = selectedCategory !== null;
+  const [selectedRole, setSelectedRole] = useState<Role | null>(null);
+  const [roleToDelete, setRoleToDelete] = useState<Role | null>(null);
+  const isEditMode = selectedRole !== null;
 
   const {
     register,
@@ -75,28 +58,28 @@ const CategoryPage = () => {
     reset,
     setValue,
     formState: { errors },
-  } = useForm<CategoryRequest>();
+  } = useForm<RoleRequest>();
 
   useEffect(() => {
-    if (selectedCategory) {
-      setValue("Category_Name", selectedCategory.Category_Name);
+    if (selectedRole) {
+      setValue("Role_Name", selectedRole.Role_Name);
     } else {
       reset();
     }
-  }, [selectedCategory, reset, setValue]);
+  }, [selectedRole, reset, setValue]);
 
-  const onSubmit = (data: CategoryRequest) => {
-    if (isEditMode && selectedCategory) {
-      updateCategoryMutation.mutate(
+  const onSubmit = (data: RoleRequest) => {
+    if (isEditMode && selectedRole) {
+      updateRoleMutation.mutate(
         {
-          id: selectedCategory.Category_Id,
+          id: selectedRole.Role_Id,
           data,
         },
         {
           onSuccess: () => {
             setOpen(false);
 
-            setSelectedCategory(null);
+            setSelectedRole(null);
 
             reset();
           },
@@ -106,7 +89,7 @@ const CategoryPage = () => {
       return;
     }
 
-    addCategoryMutation.mutate(data, {
+    addRoleMutation.mutate(data, {
       onSuccess: () => {
         setOpen(false);
 
@@ -116,13 +99,11 @@ const CategoryPage = () => {
   };
 
   const handleDelete = () => {
-    if (!categoryToDelete) return;
-
-    deleteCategoryMutation.mutate(categoryToDelete.Category_Id, {
+    if (!roleToDelete) return;
+    deleteRoleMutation.mutate(roleToDelete.Role_Id, {
       onSuccess: () => {
         setDeleteOpen(false);
-
-        setCategoryToDelete(null);
+        setRoleToDelete(null);
       },
     });
   };
@@ -131,7 +112,7 @@ const CategoryPage = () => {
     return (
       <Card>
         <CardContent className="py-10 text-center">
-          Loading Categories...
+          Loading Roles...
         </CardContent>
       </Card>
     );
@@ -152,20 +133,18 @@ const CategoryPage = () => {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
-            <CardTitle>Categories</CardTitle>
-
-            <CardDescription>Manage Categories</CardDescription>
+            <CardTitle>Roles</CardTitle>
+            <CardDescription>Manage Roles</CardDescription>
           </div>
-
           <Button
             onClick={() => {
-              setSelectedCategory(null);
+              setSelectedRole(null);
               reset();
               setOpen(true);
             }}
           >
             <Plus className="mr-2 h-4 w-4" />
-            Add Category
+            Add Role
           </Button>
         </CardHeader>
 
@@ -173,28 +152,27 @@ const CategoryPage = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-24">ID</TableHead>
-
-                <TableHead>Category Name</TableHead>
-
+                <TableHead className="w-20">ID</TableHead>
+                <TableHead>Role Name</TableHead>
                 <TableHead className="text-right w-40">Actions</TableHead>
               </TableRow>
             </TableHeader>
 
             <TableBody>
-              {categories && categories.length > 0 ? (
-                categories.map((category: Category) => (
-                  <TableRow key={category.Category_Id}>
-                    <TableCell>{category.Category_Id}</TableCell>
+              {roles && roles.length > 0 ? (
+                roles.map((role: Role) => (
+                  <TableRow key={role.Role_Id}>
+                    <TableCell>{role.Role_Id}</TableCell>
 
-                    <TableCell>{category.Category_Name}</TableCell>
+                    <TableCell>{role.Role_Name}</TableCell>
 
                     <TableCell className="text-right space-x-2">
                       <Button
-                        variant="outline"
                         size="sm"
+                        variant="outline"
                         onClick={() => {
-                          setSelectedCategory(category);
+                          setSelectedRole(role);
+
                           setOpen(true);
                         }}
                       >
@@ -202,10 +180,11 @@ const CategoryPage = () => {
                       </Button>
 
                       <Button
-                        variant="destructive"
                         size="sm"
+                        variant="destructive"
                         onClick={() => {
-                          setCategoryToDelete(category);
+                          setRoleToDelete(role);
+
                           setDeleteOpen(true);
                         }}
                       >
@@ -220,7 +199,7 @@ const CategoryPage = () => {
                     colSpan={3}
                     className="h-24 text-center text-muted-foreground"
                   >
-                    No Categories Found
+                    No Roles Found
                   </TableCell>
                 </TableRow>
               )}
@@ -237,21 +216,18 @@ const CategoryPage = () => {
           setOpen(value);
 
           if (!value) {
-            setSelectedCategory(null);
+            setSelectedRole(null);
+
             reset();
           }
         }}
       >
         <DrawerContent className="mx-auto max-w-lg">
           <DrawerHeader>
-            <DrawerTitle>
-              {isEditMode ? "Edit Category" : "Add Category"}
-            </DrawerTitle>
+            <DrawerTitle>{isEditMode ? "Edit Role" : "Add Role"}</DrawerTitle>
 
             <DrawerDescription>
-              {isEditMode
-                ? "Update category details."
-                : "Create a new category."}
+              {isEditMode ? "Update role details." : "Create a new role."}
             </DrawerDescription>
           </DrawerHeader>
 
@@ -260,21 +236,20 @@ const CategoryPage = () => {
             className="space-y-5 px-6 pb-6"
           >
             <div className="space-y-2">
-              <Label htmlFor="Category_Name">Category Name</Label>
+              <Label>Role Name</Label>
 
               <Input
-                id="Category_Name"
                 autoFocus
                 maxLength={100}
-                placeholder="Enter Category Name"
-                {...register("Category_Name", {
-                  required: "Category Name is required",
+                placeholder="Enter Role Name"
+                {...register("Role_Name", {
+                  required: "Role Name is required",
                 })}
               />
 
-              {errors.Category_Name && (
+              {errors.Role_Name && (
                 <p className="text-sm text-red-500">
-                  {errors.Category_Name.message}
+                  {errors.Role_Name.message}
                 </p>
               )}
             </div>
@@ -283,29 +258,26 @@ const CategoryPage = () => {
               <Button
                 type="submit"
                 disabled={
-                  addCategoryMutation.isPending ||
-                  updateCategoryMutation.isPending
+                  addRoleMutation.isPending || updateRoleMutation.isPending
                 }
               >
-                {addCategoryMutation.isPending ||
-                updateCategoryMutation.isPending
+                {addRoleMutation.isPending || updateRoleMutation.isPending
                   ? isEditMode
                     ? "Updating..."
                     : "Saving..."
                   : isEditMode
-                    ? "Update Category"
-                    : "Save Category"}
+                    ? "Update Role"
+                    : "Save Role"}
               </Button>
+
               <Button
                 type="button"
                 variant="outline"
-                disabled={
-                  addCategoryMutation.isPending ||
-                  updateCategoryMutation.isPending
-                }
                 onClick={() => {
                   setOpen(false);
-                  setSelectedCategory(null);
+
+                  setSelectedRole(null);
+
                   reset();
                 }}
               >
@@ -323,32 +295,33 @@ const CategoryPage = () => {
           setDeleteOpen(open);
 
           if (!open) {
-            setCategoryToDelete(null);
+            setRoleToDelete(null);
           }
         }}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Category</AlertDialogTitle>
+            <AlertDialogTitle>Delete Role</AlertDialogTitle>
+
             <AlertDialogDescription>
               Are you sure you want to delete{" "}
-              <span className="font-semibold">
-                {categoryToDelete?.Category_Name}
-              </span>
+              <span className="font-semibold">{roleToDelete?.Role_Name}</span>
               ?
               <br />
               This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
+
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleteCategoryMutation.isPending}>
+            <AlertDialogCancel disabled={deleteRoleMutation.isPending}>
               Cancel
             </AlertDialogCancel>
+
             <AlertDialogAction
               onClick={handleDelete}
-              disabled={deleteCategoryMutation.isPending}
+              disabled={deleteRoleMutation.isPending}
             >
-              {deleteCategoryMutation.isPending ? "Deleting..." : "Delete"}
+              {deleteRoleMutation.isPending ? "Deleting..." : "Delete"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -357,4 +330,4 @@ const CategoryPage = () => {
   );
 };
 
-export default CategoryPage;
+export default RolePage;

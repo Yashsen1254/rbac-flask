@@ -3,9 +3,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import ProtectedRoute from "./ProtectedRoute";
 import NotFound from "@/pages/NotFound";
-import LoginPage from "@/features/auth/LoginPage";
 import DashboardLayout from "@/features/dashboard/DashboardPage";
 import DashboardPage from "@/features/dashboard/DashboardPage";
+import AuthPage from "@/features/auth/AuthPage";
 
 const AppRoutes = () => {
 
@@ -14,7 +14,7 @@ const AppRoutes = () => {
             <Routes>
                 <Route
                     path="/login"
-                    element={<LoginPage />}
+                    element={<AuthPage />}
                 />
                 <Route
                     element={
