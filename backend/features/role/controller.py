@@ -14,7 +14,7 @@ def add_role_controller():
     if not is_valid:
         return jsonify({"message": validate_data}), 400
 
-    status, message = add_role(validate_data["Name"])
+    status, message = add_role(validate_data["Role_Name"])
 
     if not status:
         return jsonify({"message": message}), 400
@@ -29,7 +29,7 @@ def display_role_controller():
     return jsonify([
         {
             "Role_Id": role.Role_Id,
-            "Name": role.Name
+            "Role_Name": role.Name
         }
         for role in roles
     ]), 200
@@ -44,7 +44,7 @@ def update_role_controller(role_id):
     if not is_valid:
         return jsonify({"message": validate_data}), 400
 
-    status, message = update_role(role_id, validate_data["Name"])
+    status, message = update_role(role_id, validate_data["Role_Name"])
 
     if not status:
         return jsonify({"message": message}), 400

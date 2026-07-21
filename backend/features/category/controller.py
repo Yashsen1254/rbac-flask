@@ -13,7 +13,7 @@ def add_category_controller():
     if not is_valid:
         return jsonify({"message": result}), 400
 
-    status, message = add_category(result["Name"])
+    status, message = add_category(result["Category_Name"])
 
     if not status:
         return jsonify({"message": message}), 400
@@ -27,7 +27,7 @@ def display_category_controller():
     return jsonify([
         {
             "Category_Id": category.Category_Id,
-            "Name": category.Name
+            "Category_Name": category.Name
         }
         for category in categories
     ]), 200
@@ -41,7 +41,7 @@ def update_category_controller(category_id):
     if not is_valid:
         return jsonify({"message": result}), 400
 
-    status, message = update_category(category_id, result["Name"])
+    status, message = update_category(category_id, result["Category_Name"])
 
     if not status:
         return jsonify({"message": message}), 400

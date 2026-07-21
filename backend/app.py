@@ -11,12 +11,12 @@ from models.RoleUserModel import RoleUserModel
 from models.UserModel import UserModel
 from features.auth.routes import auth_bp
 from features.category.routes import category_bp
-from features.permission.routes import permission_bp
 from features.product.routes import product_bp
 from features.role.routes import role_bp
 from features.rolepermission.routes import rolepermission_bp
 from features.user.routes import user_bp
 from features.userrole.routes import userrole_bp
+from features.page.routes import page_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -26,12 +26,12 @@ cors.init_app(app)
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(category_bp)
-app.register_blueprint(permission_bp)
 app.register_blueprint(product_bp)
 app.register_blueprint(role_bp)
 app.register_blueprint(rolepermission_bp)
 app.register_blueprint(user_bp)
 app.register_blueprint(userrole_bp)
+app.register_blueprint(page_bp)
 
 migrate = Migrate(app, db)
 
