@@ -50,11 +50,14 @@ import {
 } from "./hooks/mutations/categoryMutations";
 
 import { useCategories } from "./hooks/queries/categoryQueries";
-
+import { useMyPermissions } from "../auth/hooks/queries/useMyPermissions";
 import type { Category, CategoryRequest } from "./types/category";
 
 const CategoryPage = () => {
   const { data: categories, isLoading, isError, error } = useCategories();
+  const { data: perms } = useMyPermissions();
+  const userPerms = perms?.permissions?.Category;
+  
   const addCategoryMutation = useAddCategory();
   const updateCategoryMutation = useUpdateCategory();
   const deleteCategoryMutation = useDeleteCategory();
@@ -157,16 +160,18 @@ const CategoryPage = () => {
             <CardDescription>Manage Categories</CardDescription>
           </div>
 
-          <Button
-            onClick={() => {
-              setSelectedCategory(null);
-              reset();
-              setOpen(true);
-            }}
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            Add Category
-          </Button>
+          {userPerms?.AddPermission && (
+            <Button
+              onClick={() => {
+                setSelectedCategory(null);
+                reset();
+                setOpen(true);
+              }}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Add Category
+            </Button>
+          )}
         </CardHeader>
 
         <CardContent>
@@ -177,7 +182,9 @@ const CategoryPage = () => {
 
                 <TableHead>Category Name</TableHead>
 
-                <TableHead className="text-right w-40">Actions</TableHead>
+                {(userPerms?.EditPermission || userPerms?.DeletePermission) && (
+                  <TableHead className="text-right w-40">Actions</TableHead>
+                )}
               </TableRow>
             </TableHeader>
 
@@ -189,29 +196,35 @@ const CategoryPage = () => {
 
                     <TableCell>{category.Category_Name}</TableCell>
 
-                    <TableCell className="text-right space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setSelectedCategory(category);
-                          setOpen(true);
-                        }}
-                      >
-                        Edit
-                      </Button>
+                    {(userPerms?.EditPermission || userPerms?.DeletePermission) && (
+                      <TableCell className="text-right space-x-2">
+                        {userPerms?.EditPermission && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setSelectedCategory(category);
+                              setOpen(true);
+                            }}
+                          >
+                            Edit
+                          </Button>
+                        )}
 
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => {
-                          setCategoryToDelete(category);
-                          setDeleteOpen(true);
-                        }}
-                      >
-                        Delete
-                      </Button>
-                    </TableCell>
+                        {userPerms?.DeletePermission && (
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => {
+                              setCategoryToDelete(category);
+                              setDeleteOpen(true);
+                            }}
+                          >
+                            Delete
+                          </Button>
+                        )}
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))
               ) : (

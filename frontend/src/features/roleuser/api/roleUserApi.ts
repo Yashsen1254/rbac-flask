@@ -1,5 +1,5 @@
 import axiosInstance from "@/api/axios";
-import type { RoleUserRequest } from "@/features/roleuser/types/roleuser";
+import type { RoleUserRequest } from "@/features/roleuser/types/roleUser";
 
 export const getRoleUsers = async () => {
     const response = await axiosInstance.get("/roleuser/display");

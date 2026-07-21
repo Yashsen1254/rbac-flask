@@ -2,37 +2,37 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import {
-    addRoleUser,
-    deleteRoleUser,
-    updateRoleUser,
-} from "../../api/roleUserApi";
+    addRolePermission,
+    deleteRolePermission,
+    updateRolePermission,
+} from "../../api/rolePermissionApi";
 
-import type { RoleUserRequest } from "../../types/roleUser";
+import type { RolePermissionRequest } from "../../types/rolePermission";
 
-export const useAddRoleUser = () => {
+export const useAddRolePermission = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: addRoleUser,
+        mutationFn: addRolePermission,
 
         onSuccess: (data: any) => {
             toast.success(data.message);
 
             queryClient.invalidateQueries({
-                queryKey: ["roleUsers"],
+                queryKey: ["rolePermissions"],
             });
         },
 
         onError: (error: any) => {
             toast.error(
                 error.response?.data?.message ??
-                "Failed to assign role."
+                "Failed to assign role permission."
             );
         },
     });
 };
 
-export const useUpdateRoleUser = () => {
+export const useUpdateRolePermission = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -41,44 +41,44 @@ export const useUpdateRoleUser = () => {
             data,
         }: {
             id: number;
-            data: RoleUserRequest;
-        }) => updateRoleUser(id, data),
+            data: RolePermissionRequest;
+        }) => updateRolePermission(id, data),
 
         onSuccess: (data: any) => {
             toast.success(data.message);
 
             queryClient.invalidateQueries({
-                queryKey: ["roleUsers"],
+                queryKey: ["rolePermissions"],
             });
         },
 
         onError: (error: any) => {
             toast.error(
                 error.response?.data?.message ??
-                "Failed to update role."
+                "Failed to update role permission."
             );
         },
     });
 };
 
-export const useDeleteRoleUser = () => {
+export const useDeleteRolePermission = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: deleteRoleUser,
+        mutationFn: deleteRolePermission,
 
         onSuccess: (data: any) => {
             toast.success(data.message);
 
             queryClient.invalidateQueries({
-                queryKey: ["roleUsers"],
+                queryKey: ["rolePermissions"],
             });
         },
 
         onError: (error: any) => {
             toast.error(
                 error.response?.data?.message ??
-                "Failed to delete role assignment."
+                "Failed to delete role permission assignment."
             );
         },
     });

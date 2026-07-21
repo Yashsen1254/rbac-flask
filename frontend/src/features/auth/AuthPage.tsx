@@ -20,7 +20,7 @@ const AuthPage = () => {
     loginMutation.mutate(data);
   };
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="relative flex items-center justify-center h-screen">
       <Card className="w-[400px]">
         <CardHeader>
           <CardTitle>Login</CardTitle>
@@ -33,7 +33,7 @@ const AuthPage = () => {
               placeholder="Password"
               {...register("Password")}
             />
-            <Button className="w-full" disabled={loginMutation.isPending}>
+            <Button type="submit" className="w-full" disabled={loginMutation.isPending}>
               {loginMutation.isPending ? "Logging in..." : "Login"}
             </Button>
           </form>

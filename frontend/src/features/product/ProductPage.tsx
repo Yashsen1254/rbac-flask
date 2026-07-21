@@ -52,11 +52,15 @@ import {
 } from "./hooks/mutations/productMutations";
 import { useProducts } from "./hooks/queries/productQueries";
 import { useCategories } from "../category/hooks/queries/categoryQueries";
+import { useMyPermissions } from "../auth/hooks/queries/useMyPermissions";
 import type { Product, ProductRequest } from "./types/product";
 
 const ProductPage = () => {
   const { data: products, isLoading, isError, error } = useProducts();
   const { data: categories } = useCategories();
+  const { data: perms } = useMyPermissions();
+  const userPerms = perms?.permissions?.Product;
+  
   const addProductMutation = useAddProduct();
   const updateProductMutation = useUpdateProduct();
   const deleteProductMutation = useDeleteProduct();
@@ -159,16 +163,18 @@ const ProductPage = () => {
             <CardTitle>Products</CardTitle>
             <CardDescription>Manage Products</CardDescription>
           </div>
-          <Button
-            onClick={() => {
-              setSelectedProduct(null);
-              reset();
-              setOpen(true);
-            }}
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            Add Product
-          </Button>
+          {userPerms?.AddPermission && (
+            <Button
+              onClick={() => {
+                setSelectedProduct(null);
+                reset();
+                setOpen(true);
+              }}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Add Product
+            </Button>
+          )}
         </CardHeader>
 
         <CardContent>
@@ -179,7 +185,9 @@ const ProductPage = () => {
                 <TableHead>Product Name</TableHead>
                 <TableHead>Category</TableHead>
                 <TableHead>Price</TableHead>
-                <TableHead className="text-right w-40">Actions</TableHead>
+                {(userPerms?.EditPermission || userPerms?.DeletePermission) && (
+                  <TableHead className="text-right w-40">Actions</TableHead>
+                )}
               </TableRow>
             </TableHeader>
 
@@ -198,29 +206,35 @@ const ProductPage = () => {
                         "-"}
                     </TableCell>
                     <TableCell>₹ {product.Price}</TableCell>
-                    <TableCell className="text-right space-x-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => {
-                          setSelectedProduct(product);
-                          setOpen(true);
-                        }}
-                      >
-                        Edit
-                      </Button>
+                    {(userPerms?.EditPermission || userPerms?.DeletePermission) && (
+                      <TableCell className="text-right space-x-2">
+                        {userPerms?.EditPermission && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setSelectedProduct(product);
+                              setOpen(true);
+                            }}
+                          >
+                            Edit
+                          </Button>
+                        )}
 
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => {
-                          setProductToDelete(product);
-                          setDeleteOpen(true);
-                        }}
-                      >
-                        Delete
-                      </Button>
-                    </TableCell>
+                        {userPerms?.DeletePermission && (
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => {
+                              setProductToDelete(product);
+                              setDeleteOpen(true);
+                            }}
+                          >
+                            Delete
+                          </Button>
+                        )}
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))
               ) : (

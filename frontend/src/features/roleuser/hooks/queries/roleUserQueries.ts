@@ -3,7 +3,7 @@ import {
     getRoleUser,
     getRoleUsers,
 } from "../../api/roleUserApi";
-import type { RoleUser } from "../../types/roleuser";
+import type { RoleUser } from "../../types/roleUser";
 
 export const useRoleUsers = () => {
     return useQuery<RoleUser[]>({

@@ -1,6 +1,5 @@
 import {
   FolderTree,
-  KeyRound,
   LayoutDashboard,
   Package,
   Shield,
@@ -26,12 +25,6 @@ export const navItems = [
     title: "Roles",
     url: "/roles",
     icon: Shield,
-  },
-
-  {
-    title: "Permissions",
-    url: "/permissions",
-    icon: KeyRound,
   },
 
   {

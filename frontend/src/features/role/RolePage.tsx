@@ -39,10 +39,14 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useAddRole, useDeleteRole, useUpdateRole } from "./hooks/mutations/roleMutations";
 import { useRoles } from "./hooks/queries/roleQueries";
+import { useMyPermissions } from "../auth/hooks/queries/useMyPermissions";
 import type { Role, RoleRequest } from "./types/role";
 
 const RolePage = () => {
   const { data: roles, isLoading, isError, error } = useRoles();
+  const { data: perms } = useMyPermissions();
+  const userPerms = perms?.permissions?.Role;
+  
   const addRoleMutation = useAddRole();
   const updateRoleMutation = useUpdateRole();
   const deleteRoleMutation = useDeleteRole();
@@ -136,16 +140,18 @@ const RolePage = () => {
             <CardTitle>Roles</CardTitle>
             <CardDescription>Manage Roles</CardDescription>
           </div>
-          <Button
-            onClick={() => {
-              setSelectedRole(null);
-              reset();
-              setOpen(true);
-            }}
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            Add Role
-          </Button>
+          {userPerms?.AddPermission && (
+            <Button
+              onClick={() => {
+                setSelectedRole(null);
+                reset();
+                setOpen(true);
+              }}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Add Role
+            </Button>
+          )}
         </CardHeader>
 
         <CardContent>
@@ -154,7 +160,9 @@ const RolePage = () => {
               <TableRow>
                 <TableHead className="w-20">ID</TableHead>
                 <TableHead>Role Name</TableHead>
-                <TableHead className="text-right w-40">Actions</TableHead>
+                {(userPerms?.EditPermission || userPerms?.DeletePermission) && (
+                  <TableHead className="text-right w-40">Actions</TableHead>
+                )}
               </TableRow>
             </TableHeader>
 
@@ -166,31 +174,37 @@ const RolePage = () => {
 
                     <TableCell>{role.Role_Name}</TableCell>
 
-                    <TableCell className="text-right space-x-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => {
-                          setSelectedRole(role);
+                    {(userPerms?.EditPermission || userPerms?.DeletePermission) && (
+                      <TableCell className="text-right space-x-2">
+                        {userPerms?.EditPermission && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setSelectedRole(role);
 
-                          setOpen(true);
-                        }}
-                      >
-                        Edit
-                      </Button>
+                              setOpen(true);
+                            }}
+                          >
+                            Edit
+                          </Button>
+                        )}
 
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => {
-                          setRoleToDelete(role);
+                        {userPerms?.DeletePermission && (
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => {
+                              setRoleToDelete(role);
 
-                          setDeleteOpen(true);
-                        }}
-                      >
-                        Delete
-                      </Button>
-                    </TableCell>
+                              setDeleteOpen(true);
+                            }}
+                          >
+                            Delete
+                          </Button>
+                        )}
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))
               ) : (

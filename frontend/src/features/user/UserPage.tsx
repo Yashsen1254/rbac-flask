@@ -38,10 +38,13 @@ import {
   useUpdateUser,
 } from "./hooks/mutations/userMutations";
 import { useUsers } from "./hooks/queries/userQueries";
+import { useMyPermissions } from "../auth/hooks/queries/useMyPermissions";
 import type { User, UserRequest } from "./types/user";
 
 const UserPage = () => {
   const { data: users, isLoading, isError, error } = useUsers();
+  const { data: perms } = useMyPermissions();
+  const userPerms = perms?.permissions?.User;  
   const addUserMutation = useAddUser();
   const updateUserMutation = useUpdateUser();
   const deleteUserMutation = useDeleteUser();
@@ -132,16 +135,18 @@ const UserPage = () => {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">User Management</h1>
 
-        <Button
-          onClick={() => {
-            reset();
-            setSelectedUser(null);
-            setOpen(true);
-          }}
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Add User
-        </Button>
+        {userPerms?.AddPermission && (
+          <Button
+            onClick={() => {
+              reset();
+              setSelectedUser(null);
+              setOpen(true);
+            }}
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add User
+          </Button>
+        )}
       </div>
 
       <Card>
@@ -155,7 +160,9 @@ const UserPage = () => {
 
                 <TableHead>Email</TableHead>
 
-                <TableHead className="text-right">Actions</TableHead>
+                {(userPerms?.EditPermission || userPerms?.DeletePermission) && (
+                  <TableHead className="text-right">Actions</TableHead>
+                )}
               </TableRow>
             </TableHeader>
 
@@ -168,29 +175,35 @@ const UserPage = () => {
 
                   <TableCell>{user.Email}</TableCell>
 
-                  <TableCell className="text-right space-x-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setSelectedUser(user);
-                        setOpen(true);
-                      }}
-                    >
-                      Edit
-                    </Button>
+                  {(userPerms?.EditPermission || userPerms?.DeletePermission) && (
+                    <TableCell className="text-right space-x-2">
+                      {userPerms?.EditPermission && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setSelectedUser(user);
+                            setOpen(true);
+                          }}
+                        >
+                          Edit
+                        </Button>
+                      )}
 
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => {
-                        setUserToDelete(user);
-                        setDeleteOpen(true);
-                      }}
-                    >
-                      Delete
-                    </Button>
-                  </TableCell>
+                      {userPerms?.DeletePermission && (
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => {
+                            setUserToDelete(user);
+                            setDeleteOpen(true);
+                          }}
+                        >
+                          Delete
+                        </Button>
+                      )}
+                    </TableCell>
+                  )}
                 </TableRow>
               ))}
             </TableBody>

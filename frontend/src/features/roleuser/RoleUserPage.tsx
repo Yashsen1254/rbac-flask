@@ -2,14 +2,10 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import {
   Table,
@@ -22,8 +18,6 @@ import {
 import {
   Drawer,
   DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
@@ -52,12 +46,16 @@ import {
 import { useRoleUsers } from "./hooks/queries/roleUserQueries";
 import { useUsers } from "@/features/user/hooks/queries/userQueries";
 import { useRoles } from "@/features/role/hooks/queries/roleQueries";
-import type { RoleUser, RoleUserRequest } from "./types/roleuser";
+import { useMyPermissions } from "../auth/hooks/queries/useMyPermissions";
+import type { RoleUser, RoleUserRequest } from "./types/roleUser";
 
 const RoleUserPage = () => {
   const { data: roleUsers, isLoading, isError, error } = useRoleUsers();
   const { data: users } = useUsers();
   const { data: roles } = useRoles();
+  const { data: perms } = useMyPermissions();
+  const userPerms = perms?.permissions?.UserRole;
+
   const addRoleUserMutation = useAddRoleUser();
   const updateRoleUserMutation = useUpdateRoleUser();
   const deleteRoleUserMutation = useDeleteRoleUser();
@@ -77,10 +75,10 @@ const RoleUserPage = () => {
   const isEditMode = selectedRoleUser !== null;
 
   const {
-    register,
     handleSubmit,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<RoleUserRequest>();
 
@@ -173,16 +171,18 @@ const RoleUserPage = () => {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Role User Management</h1>
 
-        <Button
-          onClick={() => {
-            reset();
-            setSelectedRoleUser(null);
-            setOpen(true);
-          }}
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Assign Role
-        </Button>
+        {userPerms?.AddPermission && (
+          <Button
+            onClick={() => {
+              reset();
+              setSelectedRoleUser(null);
+              setOpen(true);
+            }}
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Assign Role
+          </Button>
+        )}
       </div>
 
       <Card>
@@ -194,7 +194,9 @@ const RoleUserPage = () => {
 
                 <TableHead>Role</TableHead>
 
-                <TableHead className="text-right">Actions</TableHead>
+                {(userPerms?.EditPermission || userPerms?.DeletePermission) && (
+                  <TableHead className="text-right">Actions</TableHead>
+                )}
               </TableRow>
             </TableHeader>
 
@@ -205,29 +207,35 @@ const RoleUserPage = () => {
 
                   <TableCell>{roleUser.Role_Name}</TableCell>
 
-                  <TableCell className="text-right space-x-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setSelectedRoleUser(roleUser);
-                        setOpen(true);
-                      }}
-                    >
-                      Edit
-                    </Button>
+                  {(userPerms?.EditPermission || userPerms?.DeletePermission) && (
+                    <TableCell className="text-right space-x-2">
+                      {userPerms?.EditPermission && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setSelectedRoleUser(roleUser);
+                            setOpen(true);
+                          }}
+                        >
+                          Edit
+                        </Button>
+                      )}
 
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => {
-                        setRoleUserToDelete(roleUser);
-                        setDeleteOpen(true);
-                      }}
-                    >
-                      Delete
-                    </Button>
-                  </TableCell>
+                      {userPerms?.DeletePermission && (
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => {
+                            setRoleUserToDelete(roleUser);
+                            setDeleteOpen(true);
+                          }}
+                        >
+                          Delete
+                        </Button>
+                      )}
+                    </TableCell>
+                  )}
                 </TableRow>
               ))}
             </TableBody>
@@ -291,7 +299,7 @@ const RoleUserPage = () => {
                 <SelectContent>
                   {roles?.map((role) => (
                     <SelectItem key={role.Role_Id} value={String(role.Role_Id)}>
-                      {role.Name}
+                      {role.Role_Name}
                     </SelectItem>
                   ))}
                 </SelectContent>
