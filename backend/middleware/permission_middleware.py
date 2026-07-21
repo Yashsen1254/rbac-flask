@@ -3,14 +3,13 @@ from flask import jsonify
 from flask_jwt_extended import get_jwt_identity
 from models.RoleUserModel import RoleUserModel
 from models.RolePermissionModel import RolePermissionModel
-from models.PermissionModel import PermissionModel
+from models.PageModel import PageModel
 
-def permission_required(permission_name):
+def permission_required(page_name, permission_name):
     def decorator(function):
         @wraps(function)
         def wrapper(*args, **kwargs):
             user_id = int(get_jwt_identity())
-
             role_user = RoleUserModel.query.filter_by(User_Id=user_id).first()
 
             if not role_user:
@@ -18,25 +17,23 @@ def permission_required(permission_name):
                     "message": "Role not assigned."
                 }), 403
 
+            page = PageModel.query.filter_by(PageName=page_name).first()
+            if not page:
+                return jsonify({
+                    "message": f"Page '{page_name}' not found."
+                }), 404
+
             role_permission = RolePermissionModel.query.filter_by(
-                Role_Id=role_user.Role_Id
+                Role_Id=role_user.Role_Id,
+                Page_Id=page.Page_Id
             ).first()
 
             if not role_permission:
                 return jsonify({
-                    "message": "Permission not assigned."
+                    "message": f"Permission not assigned for {page_name}."
                 }), 403
 
-            permission = PermissionModel.query.filter_by(
-                Permission_Id=role_permission.Permission_Id
-            ).first()
-
-            if not permission:
-                return jsonify({
-                    "message": "Permission not found."
-                }), 403
-
-            if not getattr(permission, permission_name):
+            if not getattr(role_permission, permission_name):
                 return jsonify({
                     "message": "Access Denied."
                 }), 403

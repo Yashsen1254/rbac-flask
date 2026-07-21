@@ -5,7 +5,7 @@ from middleware.auth_middleware import authentication_required
 from middleware.permission_middleware import permission_required
 
 @authentication_required
-@permission_required("AddPermission")
+@permission_required("Role", "AddPermission")
 def add_role_controller():
     data = request.get_json()
 
@@ -22,7 +22,7 @@ def add_role_controller():
     return jsonify({"message": message}), 200
 
 @authentication_required
-@permission_required("ViewPermission")
+@permission_required("Role", "ViewPermission")
 def display_role_controller():
     roles = display_role()
 
@@ -35,7 +35,7 @@ def display_role_controller():
     ]), 200
 
 @authentication_required
-@permission_required("EditPermission")
+@permission_required("Role", "EditPermission")
 def update_role_controller(role_id):
     data = request.get_json()
 
@@ -52,7 +52,7 @@ def update_role_controller(role_id):
     return jsonify({"message": message}), 200
 
 @authentication_required
-@permission_required("DeletePermission")
+@permission_required("Role", "DeletePermission")
 def delete_role_controller(role_id):
     status, message = delete_role(role_id)
 

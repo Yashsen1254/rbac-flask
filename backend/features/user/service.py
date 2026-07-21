@@ -12,7 +12,7 @@ def add_users(Name, Email, Password):
     db.session.add(user)
     db.session.commit()
 
-    return True, user
+    return True, "User added successfully"
 
 def delete_user(user_id):
     user = UserModel.query.get(user_id)

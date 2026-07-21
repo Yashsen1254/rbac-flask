@@ -5,7 +5,7 @@ from middleware.auth_middleware import authentication_required
 from middleware.permission_middleware import permission_required
 
 @authentication_required
-@permission_required("AddPermission")
+@permission_required("Product", "AddPermission")
 def add_product_controller():
     data = request.get_json()
 
@@ -26,7 +26,7 @@ def add_product_controller():
     return jsonify({"message": message}), 200
 
 @authentication_required
-@permission_required("ViewPermission")
+@permission_required("Product", "ViewPermission")
 def display_product_controller():
     products = display_product()
 
@@ -41,7 +41,7 @@ def display_product_controller():
     ]), 200
 
 @authentication_required
-@permission_required("EditPermission")
+@permission_required("Product", "EditPermission")
 def update_product_controller(product_id):
     data = request.get_json()
 
@@ -63,7 +63,7 @@ def update_product_controller(product_id):
     return jsonify({"message": message}), 200
 
 @authentication_required
-@permission_required("DeletePermission")
+@permission_required("Product", "DeletePermission")
 def delete_product_controller(product_id):
 
     status, message = delete_product(product_id)

@@ -5,7 +5,7 @@ from middleware.auth_middleware import authentication_required
 from middleware.permission_middleware import permission_required
 
 @authentication_required
-@permission_required("AddPermission")
+@permission_required("UserRole", "AddPermission")
 def add_userrole_controller():
     data = request.get_json()
 
@@ -26,7 +26,7 @@ def add_userrole_controller():
 
 
 @authentication_required
-@permission_required("ViewPermission")
+@permission_required("UserRole", "ViewPermission")
 def display_userrole_controller():
     userroles = display_userrole()
 
@@ -34,14 +34,16 @@ def display_userrole_controller():
         {
             "RoleUser_Id": userrole.RoleUser_Id,
             "User_Id": userrole.User_Id,
-            "Role_Id": userrole.Role_Id
+            "Role_Id": userrole.Role_Id,
+            "User_Name": userrole.User.Name if userrole.User else "",
+            "Role_Name": userrole.Role.Name if userrole.Role else ""
         }
         for userrole in userroles
     ]), 200
 
 
 @authentication_required
-@permission_required("EditPermission")
+@permission_required("UserRole", "EditPermission")
 def update_userrole_controller(userrole_id):
     data = request.get_json()
 
@@ -63,7 +65,7 @@ def update_userrole_controller(userrole_id):
 
 
 @authentication_required
-@permission_required("DeletePermission")
+@permission_required("UserRole", "DeletePermission")
 def delete_userrole_controller(userrole_id):
 
     status, message = delete_userrole(userrole_id)

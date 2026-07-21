@@ -1,11 +1,11 @@
 def categoryValidation(data):
-    Name = data.get("Name")
+    Name = data.get("Category_Name")
 
     if not Name:
-        return False, "Name is required"
+        return False, "Category_Name is required"
 
     validate_data = {
-        "Name": Name
+        "Category_Name": Name
     }
 
     return True, validate_data

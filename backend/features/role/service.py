@@ -12,7 +12,7 @@ def add_role(Name):
     db.session.add(role)
     db.session.commit()
 
-    return True, role
+    return True, "Role added successfully"
 
 def delete_role(role_id):
     role = RoleModel.query.get(role_id)

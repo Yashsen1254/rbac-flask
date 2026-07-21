@@ -5,7 +5,7 @@ from middleware.auth_middleware import authentication_required
 from middleware.permission_middleware import permission_required
 
 @authentication_required
-@permission_required("AddPermission")
+@permission_required("Category", "AddPermission")
 def add_category_controller():
     data = request.get_json()
     is_valid, result = categoryValidation(data)
@@ -21,7 +21,7 @@ def add_category_controller():
     return jsonify({"message": message}), 200
 
 @authentication_required
-@permission_required("ViewPermission")
+@permission_required("Category", "ViewPermission")
 def display_category_controller():
     categories = display_category()
     return jsonify([
@@ -33,7 +33,7 @@ def display_category_controller():
     ]), 200
 
 @authentication_required
-@permission_required("EditPermission")
+@permission_required("Category", "EditPermission")
 def update_category_controller(category_id):
     data = request.get_json()
     is_valid, result = categoryValidation(data)
@@ -49,7 +49,7 @@ def update_category_controller(category_id):
     return jsonify({"message": message}), 200
 
 @authentication_required
-@permission_required("DeletePermission")
+@permission_required("Category", "DeletePermission")
 def delete_category_controller(category_id):
     status, message = delete_category(category_id)
 
