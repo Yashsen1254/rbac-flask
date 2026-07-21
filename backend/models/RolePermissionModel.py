@@ -6,10 +6,11 @@ class RolePermissionModel(db.Model):
     RolePermission_Id = db.Column(db.Integer, primary_key=True)
     
     Role_Id = db.Column(db.Integer, db.ForeignKey("Role.Role_Id"),nullable=False)
-    ModuleName = db.Column(db.String(100), nullable=False)
+    Page_Id = db.Column(db.Integer, db.ForeignKey("Page.Page_Id"), nullable=False)
     AddPermission = db.Column(db.Boolean, default=False, nullable=False)
     EditPermission = db.Column(db.Boolean, default=False, nullable=False)
     DeletePermission = db.Column(db.Boolean, default=False, nullable=False)
     ViewPermission = db.Column(db.Boolean, default=False, nullable=False)
 
     Role = db.relationship("RoleModel", backref=db.backref("RolePermissions", lazy=True))
+    Page = db.relationship("PageModel", backref=db.backref("RolePermissions", lazy=True))
