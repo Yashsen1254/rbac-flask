@@ -11,6 +11,8 @@ import RoleUserPage from "@/features/roleuser/RoleUserPage";
 import CategoryPage from "@/features/category/CategoryPage";
 import ProductPage from "@/features/product/ProductPage";
 import RolePermissionPage from "@/features/rolepermission/RolePermissionPage";
+import RegisterPage from "@/features/auth/RegisterPage";
+import VerifyOTPPage from "@/features/auth/VerifyOTPPage";
 
 const AppRoutes = () => {
 
@@ -20,6 +22,14 @@ const AppRoutes = () => {
                 <Route
                     path="/login"
                     element={<AuthPage />}
+                />
+                <Route
+                    path="/register"
+                    element={<RegisterPage />}
+                />
+                <Route
+                    path="/verify-otp"
+                    element={<VerifyOTPPage />}
                 />
                 <Route
                     path="/"

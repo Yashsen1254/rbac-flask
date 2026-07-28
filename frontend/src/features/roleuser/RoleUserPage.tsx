@@ -3,10 +3,7 @@ import { useForm } from "react-hook-form";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -48,6 +45,7 @@ import { useUsers } from "@/features/user/hooks/queries/userQueries";
 import { useRoles } from "@/features/role/hooks/queries/roleQueries";
 import { useMyPermissions } from "../auth/hooks/queries/useMyPermissions";
 import type { RoleUser, RoleUserRequest } from "./types/roleUser";
+import { useNavigate } from "react-router-dom";
 
 const RoleUserPage = () => {
   const { data: roleUsers, isLoading, isError, error } = useRoleUsers();
@@ -55,7 +53,7 @@ const RoleUserPage = () => {
   const { data: roles } = useRoles();
   const { data: perms } = useMyPermissions();
   const userPerms = perms?.permissions?.UserRole;
-
+  const navigate = useNavigate();
   const addRoleUserMutation = useAddRoleUser();
   const updateRoleUserMutation = useUpdateRoleUser();
   const deleteRoleUserMutation = useDeleteRoleUser();
@@ -93,6 +91,7 @@ const RoleUserPage = () => {
   }, [selectedRoleUser, setValue, reset]);
 
   const onSubmit = (data: RoleUserRequest) => {
+    console.log(data);
     if (isEditMode && selectedRoleUser) {
       updateRoleUserMutation.mutate(
         {
@@ -122,10 +121,6 @@ const RoleUserPage = () => {
     });
   };
 
-  /* ===========================
-        Delete
-  =========================== */
-
   const handleDelete = () => {
     if (!roleUserToDelete) return;
 
@@ -138,10 +133,6 @@ const RoleUserPage = () => {
     });
   };
 
-  /* ===========================
-        Loading
-  =========================== */
-
   if (isLoading) {
     return (
       <Card>
@@ -151,10 +142,6 @@ const RoleUserPage = () => {
       </Card>
     );
   }
-
-  /* ===========================
-        Error
-  =========================== */
 
   if (isError) {
     return (
@@ -207,7 +194,8 @@ const RoleUserPage = () => {
 
                   <TableCell>{roleUser.Role_Name}</TableCell>
 
-                  {(userPerms?.EditPermission || userPerms?.DeletePermission) && (
+                  {(userPerms?.EditPermission ||
+                    userPerms?.DeletePermission) && (
                     <TableCell className="text-right space-x-2">
                       {userPerms?.EditPermission && (
                         <Button
@@ -243,10 +231,6 @@ const RoleUserPage = () => {
         </CardContent>
       </Card>
 
-      {/* ===========================
-            Add / Edit Drawer
-      =========================== */}
-
       <Drawer open={open} onOpenChange={setOpen}>
         <DrawerContent className="max-w-lg mx-auto">
           <DrawerHeader>
@@ -256,8 +240,6 @@ const RoleUserPage = () => {
           </DrawerHeader>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 p-4">
-            {/* User */}
-
             <div>
               <Label>User</Label>
 
@@ -266,7 +248,11 @@ const RoleUserPage = () => {
                 onValueChange={(value) => setValue("User_Id", Number(value))}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select User" />
+                  <SelectValue placeholder="Select User">
+                    {watch("User_Id")
+                      ? users?.find((u) => u.User_Id === watch("User_Id"))?.Name
+                      : undefined}
+                  </SelectValue>
                 </SelectTrigger>
 
                 <SelectContent>
@@ -283,8 +269,6 @@ const RoleUserPage = () => {
               )}
             </div>
 
-            {/* Role */}
-
             <div>
               <Label>Role</Label>
 
@@ -293,7 +277,12 @@ const RoleUserPage = () => {
                 onValueChange={(value) => setValue("Role_Id", Number(value))}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select Role" />
+                  <SelectValue placeholder="Select Role">
+                    {watch("Role_Id")
+                      ? roles?.find((r) => r.Role_Id === watch("Role_Id"))
+                          ?.Role_Name
+                      : undefined}
+                  </SelectValue>
                 </SelectTrigger>
 
                 <SelectContent>
@@ -310,16 +299,33 @@ const RoleUserPage = () => {
               )}
             </div>
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={
-                addRoleUserMutation.isPending ||
-                updateRoleUserMutation.isPending
-              }
-            >
-              {isEditMode ? "Update Assignment" : "Assign Role"}
-            </Button>
+            <div className="flex flex-col gap-3 pt-2">
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={
+                  addRoleUserMutation.isPending ||
+                  updateRoleUserMutation.isPending
+                }
+              >
+                {isEditMode ? "Update Assignment" : "Assign Role"}
+              </Button>
+
+              {isEditMode && watch("Role_Id") && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full"
+                  onClick={() =>
+                    navigate("/role-permissions", {
+                      state: { roleId: watch("Role_Id") },
+                    })
+                  }
+                >
+                  Manage Permissions
+                </Button>
+              )}
+            </div>
           </form>
         </DrawerContent>
       </Drawer>

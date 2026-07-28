@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -48,11 +49,23 @@ import {
 import { useRolePermissions } from "./hooks/queries/rolePermissionQueries";
 import { useRoles } from "@/features/role/hooks/queries/roleQueries";
 import { usePages } from "@/features/page/hooks/queries/pageQueries";
-import { useMyPermissions } from "../auth/hooks/queries/useMyPermissions";
+import { useMyPermissions } from "./../auth/hooks/queries/useMyPermissions";
 import type { RolePermission, RolePermissionRequest } from "./types/rolePermission";
 
 const RolePermissionPage = () => {
   const { data: rolePermissions, isLoading, isError, error } = useRolePermissions();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const roleIdFilter = location.state?.roleId;
+
+  const filteredRolePermissions = useMemo(() => {
+    if (!rolePermissions) return [];
+    if (roleIdFilter) {
+      return rolePermissions.filter((rp) => rp.Role_Id === Number(roleIdFilter));
+    }
+    return rolePermissions;
+  }, [rolePermissions, roleIdFilter]);
+
   const { data: roles } = useRoles();
   const { data: pages, isLoading: isPagesLoading } = usePages();
   const { data: perms } = useMyPermissions();
@@ -164,7 +177,9 @@ const RolePermissionPage = () => {
   return (
     <>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Role Permissions</h1>
+        <div className="flex items-center gap-4">
+          <h1 className="text-2xl font-bold">Role Permissions</h1>
+        </div>
 
         {userPerms?.AddPermission && (
           <Button
@@ -198,7 +213,7 @@ const RolePermissionPage = () => {
             </TableHeader>
 
             <TableBody>
-              {rolePermissions?.map((rp) => (
+              {filteredRolePermissions?.map((rp) => (
                 <TableRow key={rp.RolePermission_Id}>
                   <TableCell className="font-medium">{rp.Role_Name}</TableCell>
                   <TableCell>{rp.PageName}</TableCell>
@@ -257,7 +272,11 @@ const RolePermissionPage = () => {
                 onValueChange={(value) => setValue("Role_Id", Number(value))}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select Role" />
+                  <SelectValue placeholder="Select Role">
+                    {watch("Role_Id")
+                      ? roles?.find((r) => r.Role_Id === watch("Role_Id"))?.Role_Name
+                      : undefined}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {roles?.map((role) => (
@@ -279,7 +298,11 @@ const RolePermissionPage = () => {
                 onValueChange={(value) => setValue("Page_Id", Number(value))}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select Page" />
+                  <SelectValue placeholder="Select Page">
+                    {watch("Page_Id")
+                      ? pages?.find((p) => p.Page_Id === watch("Page_Id"))?.PageName
+                      : undefined}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {pages?.map((page) => (

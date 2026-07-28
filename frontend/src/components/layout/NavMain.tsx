@@ -34,12 +34,6 @@ export const navItems = [
   },
 
   {
-    title: "Role Permissions",
-    url: "/role-permissions",
-    icon: ShieldCheck,
-  },
-
-  {
     title: "Categories",
     url: "/categories",
     icon: FolderTree,
