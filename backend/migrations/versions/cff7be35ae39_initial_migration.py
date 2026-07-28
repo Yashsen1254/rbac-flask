@@ -1,8 +1,8 @@
-"""empty message
+"""Initial migration
 
-Revision ID: 4a48429b4d54
+Revision ID: cff7be35ae39
 Revises: 
-Create Date: 2026-07-17 14:53:31.567305
+Create Date: 2026-07-28 13:13:31.068383
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '4a48429b4d54'
+revision = 'cff7be35ae39'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,6 +22,11 @@ def upgrade():
     sa.Column('Category_Id', sa.Integer(), nullable=False),
     sa.Column('Name', sa.String(length=100), nullable=False),
     sa.PrimaryKeyConstraint('Category_Id')
+    )
+    op.create_table('Page',
+    sa.Column('Page_Id', sa.Integer(), nullable=False),
+    sa.Column('PageName', sa.String(length=100), nullable=False),
+    sa.PrimaryKeyConstraint('Page_Id')
     )
     op.create_table('Permission',
     sa.Column('Permission_Id', sa.Integer(), nullable=False),
@@ -41,7 +46,17 @@ def upgrade():
     sa.Column('Name', sa.String(length=100), nullable=False),
     sa.Column('Email', sa.String(length=100), nullable=False),
     sa.Column('Password', sa.String(length=100), nullable=False),
+    sa.Column('IsVerified', sa.Boolean(), nullable=False),
     sa.PrimaryKeyConstraint('User_Id')
+    )
+    op.create_table('EmailOTP',
+    sa.Column('OTP_Id', sa.Integer(), nullable=False),
+    sa.Column('User_Id', sa.Integer(), nullable=False),
+    sa.Column('OTP', sa.String(length=100), nullable=False),
+    sa.Column('CreatedAt', sa.DateTime(), nullable=False),
+    sa.Column('ExpireyAt', sa.DateTime(), nullable=False),
+    sa.ForeignKeyConstraint(['User_Id'], ['User.User_Id'], ),
+    sa.PrimaryKeyConstraint('OTP_Id')
     )
     op.create_table('Product',
     sa.Column('Product_Id', sa.Integer(), nullable=False),
@@ -53,9 +68,13 @@ def upgrade():
     )
     op.create_table('RolePermission',
     sa.Column('RolePermission_Id', sa.Integer(), nullable=False),
-    sa.Column('Role_Id', sa.Integer(), nullable=True),
-    sa.Column('Permission_Id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['Permission_Id'], ['Permission.Permission_Id'], ),
+    sa.Column('Role_Id', sa.Integer(), nullable=False),
+    sa.Column('Page_Id', sa.Integer(), nullable=False),
+    sa.Column('AddPermission', sa.Boolean(), nullable=False),
+    sa.Column('EditPermission', sa.Boolean(), nullable=False),
+    sa.Column('DeletePermission', sa.Boolean(), nullable=False),
+    sa.Column('ViewPermission', sa.Boolean(), nullable=False),
+    sa.ForeignKeyConstraint(['Page_Id'], ['Page.Page_Id'], ),
     sa.ForeignKeyConstraint(['Role_Id'], ['Role.Role_Id'], ),
     sa.PrimaryKeyConstraint('RolePermission_Id')
     )
@@ -75,8 +94,10 @@ def downgrade():
     op.drop_table('RoleUser')
     op.drop_table('RolePermission')
     op.drop_table('Product')
+    op.drop_table('EmailOTP')
     op.drop_table('User')
     op.drop_table('Role')
     op.drop_table('Permission')
+    op.drop_table('Page')
     op.drop_table('Category')
     # ### end Alembic commands ###
