@@ -7,3 +7,4 @@ class UserModel(db.Model):
     Name = db.Column(db.String(100), nullable=False)
     Email = db.Column(db.String(100), nullable=False)
     Password = db.Column(db.String(100), nullable=False)
+    IsVerified = db.Column(db.Boolean, default=False, nullable=False)
