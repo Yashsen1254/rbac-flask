@@ -19,3 +19,31 @@ export type UserPermissions = Record<string, PagePermission>;
 export interface PermissionsResponse {
   permissions: UserPermissions;
 }
+
+export interface RegisterRequest {
+    Name: string;
+    Email: string;
+    Password: string;
+}
+
+export interface RegisterResponse {
+    message: string;
+    Email: string;
+}
+
+export interface VerifyOTPRequest {
+    Email: string;
+    OTP: string;
+}
+
+export interface VerifyOTPResponse {
+    message: string;
+}
+
+export interface ResendOTPRequest {
+  Email: string;
+}
+
+export interface ResendOTPResponse {
+  message: string;
+}

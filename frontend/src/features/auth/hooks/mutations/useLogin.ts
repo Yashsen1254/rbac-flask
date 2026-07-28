@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { toast } from "sonner";
 import { setToken } from "@/utils/token";
-import { loginApi } from "../../api/authApi";
+import { loginApi, registerApi, verifyOTPApi, resendOTPApi } from "../../api/authApi";
 
 export const useLogin = () => {
     const navigate = useNavigate();
@@ -22,5 +22,23 @@ export const useLogin = () => {
                 "Login Failed"
             );
         },
+    });
+};
+
+export const useRegister = () => {
+    return useMutation({
+        mutationFn: registerApi,
+    });
+};
+
+export const useVerifyOTP = () => {
+    return useMutation({
+        mutationFn: verifyOTPApi,
+    });
+};
+
+export const useResendOTP = () => {
+    return useMutation({
+        mutationFn: resendOTPApi,
     });
 };
