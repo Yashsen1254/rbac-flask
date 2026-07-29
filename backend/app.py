@@ -18,6 +18,7 @@ from features.rolepermission.routes import rolepermission_bp
 from features.user.routes import user_bp
 from features.userrole.routes import userrole_bp
 from features.page.routes import page_bp
+from features.log.routes import log_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -34,6 +35,7 @@ app.register_blueprint(rolepermission_bp)
 app.register_blueprint(user_bp)
 app.register_blueprint(userrole_bp)
 app.register_blueprint(page_bp)
+app.register_blueprint(log_bp)
 
 migrate = Migrate(app, db)
 
