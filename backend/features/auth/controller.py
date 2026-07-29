@@ -2,8 +2,10 @@ from flask import request, jsonify
 from features.auth.validation import loginValidation, registerValidation, verifyOTPValidation
 from features.auth.service import login_user, get_my_permissions, register_user, verify_otp
 from middleware.auth_middleware import authentication_required
+from middleware.activity_logger import activity_log
 from flask_jwt_extended import get_jwt_identity
 
+@activity_log(module="Auth", action="Login")
 def login_controller():
     data = request.get_json()
 
@@ -26,6 +28,7 @@ def login_controller():
     }), 200
 
 
+@activity_log(module="Auth", action="Register")
 def register_controller():
     data = request.get_json()
 
@@ -55,9 +58,10 @@ def me_controller():
     if not user_id:
         return jsonify({"message": "Unauthorized"}), 401
     
-    permissions = get_my_permissions(user_id)
-    return jsonify({"permissions": permissions}), 200
+    result = get_my_permissions(user_id)
+    return jsonify(result), 200
 
+@activity_log(module="Auth", action="VerifyOTP")
 def verify_otp_controller():
 
     data = request.get_json()

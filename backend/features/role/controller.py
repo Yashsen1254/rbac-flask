@@ -3,9 +3,11 @@ from features.role.service import add_role, display_role, update_role, delete_ro
 from features.role.validation import roleValidation
 from middleware.auth_middleware import authentication_required
 from middleware.permission_middleware import permission_required
+from middleware.activity_logger import activity_log
 
 @authentication_required
 @permission_required("Role", "AddPermission")
+@activity_log(module="Role", action="Add")
 def add_role_controller():
     data = request.get_json()
 
@@ -36,6 +38,7 @@ def display_role_controller():
 
 @authentication_required
 @permission_required("Role", "EditPermission")
+@activity_log(module="Role", action="Edit")
 def update_role_controller(role_id):
     data = request.get_json()
 
@@ -53,6 +56,7 @@ def update_role_controller(role_id):
 
 @authentication_required
 @permission_required("Role", "DeletePermission")
+@activity_log(module="Role", action="Delete")
 def delete_role_controller(role_id):
     status, message = delete_role(role_id)
 

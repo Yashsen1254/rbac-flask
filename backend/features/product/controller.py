@@ -3,9 +3,11 @@ from features.product.service import add_product, display_product, update_produc
 from features.product.validation import productValidation
 from middleware.auth_middleware import authentication_required
 from middleware.permission_middleware import permission_required
+from middleware.activity_logger import activity_log
 
 @authentication_required
 @permission_required("Product", "AddPermission")
+@activity_log(module="Product", action="Add")
 def add_product_controller():
     data = request.get_json()
 
@@ -42,6 +44,7 @@ def display_product_controller():
 
 @authentication_required
 @permission_required("Product", "EditPermission")
+@activity_log(module="Product", action="Edit")
 def update_product_controller(product_id):
     data = request.get_json()
 
@@ -64,6 +67,7 @@ def update_product_controller(product_id):
 
 @authentication_required
 @permission_required("Product", "DeletePermission")
+@activity_log(module="Product", action="Delete")
 def delete_product_controller(product_id):
 
     status, message = delete_product(product_id)

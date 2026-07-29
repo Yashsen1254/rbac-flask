@@ -3,9 +3,11 @@ from features.rolepermission.service import add_rolepermission, display_roleperm
 from features.rolepermission.validation import rolepermissionValidation
 from middleware.auth_middleware import authentication_required
 from middleware.permission_middleware import permission_required
+from middleware.activity_logger import activity_log
 
 @authentication_required
 @permission_required("RolePermission", "AddPermission")
+@activity_log(module="RolePermission", action="Add")
 def add_rolepermission_controller():
     data = request.get_json()
 
@@ -69,6 +71,7 @@ def display_rolepermission_by_id_controller(rolepermission_id):
 
 @authentication_required
 @permission_required("RolePermission", "EditPermission")
+@activity_log(module="RolePermission", action="Edit")
 def update_rolepermission_controller(rolepermission_id):
     data = request.get_json()
 
@@ -95,6 +98,7 @@ def update_rolepermission_controller(rolepermission_id):
 
 @authentication_required
 @permission_required("RolePermission", "DeletePermission")
+@activity_log(module="RolePermission", action="Delete")
 def delete_rolepermission_controller(rolepermission_id):
     status, message = delete_rolepermission(rolepermission_id)
 

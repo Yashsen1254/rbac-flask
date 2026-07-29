@@ -3,9 +3,11 @@ from features.category.service import add_category, display_category, update_cat
 from features.category.validation import categoryValidation
 from middleware.auth_middleware import authentication_required
 from middleware.permission_middleware import permission_required
+from middleware.activity_logger import activity_log
 
 @authentication_required
 @permission_required("Category", "AddPermission")
+@activity_log(module="Category", action="Add")
 def add_category_controller():
     data = request.get_json()
     is_valid, result = categoryValidation(data)
@@ -34,6 +36,7 @@ def display_category_controller():
 
 @authentication_required
 @permission_required("Category", "EditPermission")
+@activity_log(module="Category", action="Edit")
 def update_category_controller(category_id):
     data = request.get_json()
     is_valid, result = categoryValidation(data)
@@ -50,6 +53,7 @@ def update_category_controller(category_id):
 
 @authentication_required
 @permission_required("Category", "DeletePermission")
+@activity_log(module="Category", action="Delete")
 def delete_category_controller(category_id):
     status, message = delete_category(category_id)
 

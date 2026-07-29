@@ -3,9 +3,11 @@ from features.user.service import add_users, display_user, update_user, delete_u
 from features.user.validation import userValidation
 from middleware.auth_middleware import authentication_required
 from middleware.permission_middleware import permission_required
+from middleware.activity_logger import activity_log
 
 @authentication_required
 @permission_required("User", "AddPermission")
+@activity_log(module="User", action="Add")
 def add_user_controller():
     data = request.get_json()
 
@@ -41,6 +43,7 @@ def display_user_controller():
 
 @authentication_required
 @permission_required("User", "EditPermission")
+@activity_log(module="User", action="Edit")
 def update_user_controller(user_id):
     data = request.get_json()
 
@@ -64,6 +67,7 @@ def update_user_controller(user_id):
 
 @authentication_required
 @permission_required("User", "DeletePermission")
+@activity_log(module="User", action="Delete")
 def delete_user_controller(user_id):
     status, message = delete_user(user_id)
 

@@ -61,7 +61,7 @@ def get_my_permissions(user_id):
     role_user = RoleUserModel.query.filter_by(User_Id=user_id).first()
 
     if not role_user:
-        return {}
+        return {"permissions": {}, "role": None}
 
     role_permissions = RolePermissionModel.query.filter_by(
         Role_Id=role_user.Role_Id
@@ -80,7 +80,9 @@ def get_my_permissions(user_id):
                 "ViewPermission": rp.ViewPermission
             }
 
-    return permissions_map
+    role_name = role_user.Role.Name if role_user.Role else None
+
+    return {"permissions": permissions_map, "role": role_name}
 
 
 def generate_otp():

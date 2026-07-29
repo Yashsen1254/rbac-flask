@@ -3,9 +3,11 @@ from features.userrole.service import add_userrole, display_userrole, update_use
 from features.userrole.validation import roleuserValidation
 from middleware.auth_middleware import authentication_required
 from middleware.permission_middleware import permission_required
+from middleware.activity_logger import activity_log
 
 @authentication_required
 @permission_required("UserRole", "AddPermission")
+@activity_log(module="UserRole", action="Add")
 def add_userrole_controller():
     data = request.get_json()
 
@@ -44,6 +46,7 @@ def display_userrole_controller():
 
 @authentication_required
 @permission_required("UserRole", "EditPermission")
+@activity_log(module="UserRole", action="Edit")
 def update_userrole_controller(userrole_id):
     data = request.get_json()
 
@@ -66,6 +69,7 @@ def update_userrole_controller(userrole_id):
 
 @authentication_required
 @permission_required("UserRole", "DeletePermission")
+@activity_log(module="UserRole", action="Delete")
 def delete_userrole_controller(userrole_id):
 
     status, message = delete_userrole(userrole_id)
