@@ -11,7 +11,7 @@ export const useLogin = () => {
         mutationFn: loginApi,
 
         onSuccess: (data) => {
-            setToken(data.message);
+            setToken(data.access_token);
             toast.success("Login Successful");
             navigate("/dashboard");
         },

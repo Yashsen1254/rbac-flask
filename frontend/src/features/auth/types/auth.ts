@@ -5,6 +5,7 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   message: string;
+  access_token: string;
 }
 
 export interface PagePermission {
@@ -18,6 +19,7 @@ export type UserPermissions = Record<string, PagePermission>;
 
 export interface PermissionsResponse {
   permissions: UserPermissions;
+  role: string | null;
 }
 
 export interface RegisterRequest {

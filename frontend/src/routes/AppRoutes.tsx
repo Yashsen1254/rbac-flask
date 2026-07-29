@@ -13,6 +13,7 @@ import ProductPage from "@/features/product/ProductPage";
 import RolePermissionPage from "@/features/rolepermission/RolePermissionPage";
 import RegisterPage from "@/features/auth/RegisterPage";
 import VerifyOTPPage from "@/features/auth/VerifyOTPPage";
+import LogPage from "@/features/log/LogPage";
 
 const AppRoutes = () => {
 
@@ -49,6 +50,7 @@ const AppRoutes = () => {
                     <Route path="/role-permissions" element={<RolePermissionPage />} />
                     <Route path="/categories" element={<CategoryPage />} />
                     <Route path="/products" element={<ProductPage />} />
+                    <Route path="/logs" element={<LogPage />} />
                 </Route>
                 <Route
                     path="*"

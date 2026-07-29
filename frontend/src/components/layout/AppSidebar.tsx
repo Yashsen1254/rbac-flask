@@ -15,10 +15,13 @@ import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import { useLogout } from "@/features/auth/hooks/mutations/useLogout";
 import { navItems } from "./NavMain";
+import { useMyPermissions } from "@/features/auth/hooks/queries/useMyPermissions";
 
 const AppSidebar = () => {
   const location = useLocation();
   const logout = useLogout();
+  const { data: myPermissions } = useMyPermissions();
+  
   return (
     <Sidebar>
       <SidebarHeader className="text-xl font-bold px-4 py-5">
@@ -31,17 +34,23 @@ const AppSidebar = () => {
 
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    isActive={location.pathname === item.url}
-                    render={<Link to={item.url} />}
-                  >
-                    <item.icon />
-                    <span>{item.title}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {navItems.map((item) => {
+                if (item.title === "Logs" && myPermissions?.role !== "Admin") {
+                  return null;
+                }
+                
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      isActive={location.pathname === item.url}
+                      render={<Link to={item.url} />}
+                    >
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

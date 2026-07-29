@@ -3,9 +3,9 @@ import {
   LayoutDashboard,
   Package,
   Shield,
-  ShieldCheck,
   UserCog,
   Users,
+  ScrollText,
 } from "lucide-react";
 
 export const navItems = [
@@ -43,5 +43,11 @@ export const navItems = [
     title: "Products",
     url: "/products",
     icon: Package,
+  },
+
+  {
+    title: "Logs",
+    url: "/logs",
+    icon: ScrollText,
   },
 ];

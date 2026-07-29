@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -55,7 +55,6 @@ import type { RolePermission, RolePermissionRequest } from "./types/rolePermissi
 const RolePermissionPage = () => {
   const { data: rolePermissions, isLoading, isError, error } = useRolePermissions();
   const location = useLocation();
-  const navigate = useNavigate();
   const roleIdFilter = location.state?.roleId;
 
   const filteredRolePermissions = useMemo(() => {
