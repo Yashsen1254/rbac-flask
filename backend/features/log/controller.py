@@ -4,12 +4,12 @@ from middleware.auth_middleware import authentication_required
 from flask_jwt_extended import get_jwt_identity
 from models.RoleUserModel import RoleUserModel
 from models.RoleModel import RoleModel
+from features.log.service import export_logs_csv_service, export_logs_pdf_service
 
 @authentication_required
 def display_logs_controller():
     user_id = get_jwt_identity()
     
-    # Check if user has Admin role
     role_user = RoleUserModel.query.filter_by(User_Id=user_id).first()
     if not role_user:
         return jsonify({"message": "Access Denied. Role not assigned."}), 403
@@ -34,3 +34,9 @@ def display_logs_controller():
         }
         for log in logs
     ]), 200
+
+def export_logs_csv_controller():
+    return export_logs_csv_service()
+
+def export_logs_pdf_controller():
+    return export_logs_pdf_service()

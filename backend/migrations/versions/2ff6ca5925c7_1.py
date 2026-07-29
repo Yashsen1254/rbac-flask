@@ -1,8 +1,8 @@
-"""Initial migration
+"""1
 
-Revision ID: cff7be35ae39
+Revision ID: 2ff6ca5925c7
 Revises: 
-Create Date: 2026-07-28 13:13:31.068383
+Create Date: 2026-07-29 12:02:35.857126
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'cff7be35ae39'
+revision = '2ff6ca5925c7'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -58,6 +58,21 @@ def upgrade():
     sa.ForeignKeyConstraint(['User_Id'], ['User.User_Id'], ),
     sa.PrimaryKeyConstraint('OTP_Id')
     )
+    op.create_table('Logs',
+    sa.Column('Log_Id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('User_Id', sa.Integer(), nullable=True),
+    sa.Column('Module', sa.String(length=100), nullable=False),
+    sa.Column('Action', sa.String(length=100), nullable=False),
+    sa.Column('Description', sa.Text(), nullable=True),
+    sa.Column('Method', sa.String(length=10), nullable=True),
+    sa.Column('Url', sa.String(length=255), nullable=True),
+    sa.Column('IpAddress', sa.String(length=50), nullable=True),
+    sa.Column('UserAgent', sa.Text(), nullable=True),
+    sa.Column('Status', sa.String(length=20), nullable=False),
+    sa.Column('CreatedAt', sa.DateTime(), nullable=False),
+    sa.ForeignKeyConstraint(['User_Id'], ['User.User_Id'], ),
+    sa.PrimaryKeyConstraint('Log_Id')
+    )
     op.create_table('Product',
     sa.Column('Product_Id', sa.Integer(), nullable=False),
     sa.Column('Name', sa.String(length=100), nullable=False),
@@ -94,6 +109,7 @@ def downgrade():
     op.drop_table('RoleUser')
     op.drop_table('RolePermission')
     op.drop_table('Product')
+    op.drop_table('Logs')
     op.drop_table('EmailOTP')
     op.drop_table('User')
     op.drop_table('Role')
