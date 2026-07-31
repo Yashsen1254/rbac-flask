@@ -1,8 +1,8 @@
-"""1
+"""init commit for docker
 
-Revision ID: 2ff6ca5925c7
+Revision ID: b8784664be97
 Revises: 
-Create Date: 2026-07-29 12:02:35.857126
+Create Date: 2026-07-31 11:52:10.297988
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '2ff6ca5925c7'
+revision = 'b8784664be97'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -63,10 +63,8 @@ def upgrade():
     sa.Column('User_Id', sa.Integer(), nullable=True),
     sa.Column('Module', sa.String(length=100), nullable=False),
     sa.Column('Action', sa.String(length=100), nullable=False),
-    sa.Column('Description', sa.Text(), nullable=True),
     sa.Column('Method', sa.String(length=10), nullable=True),
     sa.Column('Url', sa.String(length=255), nullable=True),
-    sa.Column('IpAddress', sa.String(length=50), nullable=True),
     sa.Column('UserAgent', sa.Text(), nullable=True),
     sa.Column('Status', sa.String(length=20), nullable=False),
     sa.Column('CreatedAt', sa.DateTime(), nullable=False),
